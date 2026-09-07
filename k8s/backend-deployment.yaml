@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: crypto-files-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: crypto-backend:latest
+          imagePullPolicy: Never # Puisque l'image sera construite localement
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql:3306/crypto_tdsi_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "password"
+            - name: CRYPTO_STORAGE_DIRECTORY
+              value: "/MTDSI"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: crypto-storage
+              mountPath: /MTDSI
+      volumes:
+        - name: crypto-storage
+          persistentVolumeClaim:
+            claimName: crypto-files-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: backend

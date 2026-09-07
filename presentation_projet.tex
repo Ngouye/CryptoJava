@@ -1,0 +1,294 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
+\usetheme{Madrid}
+% \usepackage[backend=bibtex, defernumbers=true, style=numeric, citestyle=ieee]{biblatex}
+% \addbibresource{ref.bib}
+\usepackage{hyperref}
+\graphicspath{{./images/}}
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+% The title
+\title[Project Crypto Java]
+{
+	Plateforme de Cryptographie Sécurisée
+}
+
+\subtitle{Soutenance de Projet - Master TDSI}
+\author[MTDSI]{Étudiant(e)s \and Professeur : Pr. Demba SOW}
+
+\date{\today} 
+
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\begin{frame}
+    % Print the title page as the first slide
+    \titlepage
+\end{frame}
+
+\begin{frame}{Plan de la présentation}
+    \tableofcontents
+\end{frame}
+
+%------------------------------------------------
+
+\section{Introduction et Objectifs}
+\begin{frame}{Contexte et Objectifs}
+	Le projet vise à fournir une plateforme web complète et sécurisée permettant de réaliser diverses opérations cryptographiques :\\
+	\vspace{0.03\textheight} 
+	\begin{itemize}
+		\item Chiffrement et déchiffrement de fichiers.
+		\item Hachage et vérification d'intégrité.
+		\item Signature numérique et validation.
+		\item Gestion sécurisée des clés asymétriques et symétriques.
+	\end{itemize}
+	\vspace{0.03\textheight}
+	Une attention particulière a été portée sur l'architecture robuste, la sécurité des accès, et la supervision du système.
+\end{frame}
+
+%------------------------------------------------
+
+\section{Architecture Globale}
+\begin{frame}{Architecture de la Plateforme}
+	L'application repose sur une architecture moderne à trois niveaux :
+	
+	\begin{block}{Frontend (React.js \& Nginx)}
+		Interface utilisateur interactive et ergonomique, construite en React et distribuée par un serveur web Nginx (faisant office de reverse proxy).
+	\end{block}
+	
+	\begin{alertblock}{Backend (Java Spring Boot)}
+		API REST robuste gérant la logique métier, les opérations cryptographiques et la sécurité (Spring Security).
+	\end{alertblock}
+	
+	\begin{examples}{Base de Données (MySQL 8.0)}
+		Persistance relationnelle sécurisée des utilisateurs, des clés publiques, et des journaux d'audit (Audit Logs).
+	\end{examples}
+\end{frame}
+
+%------------------------------------------------
+
+\section{Modèle de Données}
+\begin{frame}{Schéma Relationnel de la Base de Données}
+	\begin{center}
+	\begin{tikzpicture}[
+	  table/.style={draw, thick, rounded corners, fill=blue!5, inner sep=5pt},
+	]
+	
+	% Table User
+	\node[table] (user) {
+		\begin{tabular}{l}
+			\multicolumn{1}{c}{\textcolor{blue!80!black}{\textbf{User}}} \\
+			\hline
+			\textbf{id} (PK) \\
+			login \\
+			password \\
+			email \\
+			role \\
+		\end{tabular}
+	};
+	
+	% Table CryptoKey
+	\node[table, right=2cm of user] (key) {
+		\begin{tabular}{l}
+			\multicolumn{1}{c}{\textcolor{blue!80!black}{\textbf{CryptoKey}}} \\
+			\hline
+			\textbf{id} (PK) \\
+			\textit{user\_id} (FK) \\
+			nomCle \\
+			algorithme \\
+			cleValeur \\
+		\end{tabular}
+	};
+	
+	% Table AuditLog
+	\node[table, below=1cm of user] (log) {
+		\begin{tabular}{l}
+			\multicolumn{1}{c}{\textcolor{blue!80!black}{\textbf{AuditLog}}} \\
+			\hline
+			\textbf{id} (PK) \\
+			\textit{user\_id} (FK) \\
+			action \\
+			statut \\
+			dateAction \\
+		\end{tabular}
+	};
+	
+	% Relations (Arrows)
+	\draw[<-, thick, draw=blue!80!black] (user.east) -- node[above, font=\footnotesize] {1..N} (key.west);
+	\draw[<-, thick, draw=blue!80!black] (user.south) -- node[right, font=\footnotesize] {1..N} (log.north);
+	
+	\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+%------------------------------------------------
+
+\section{Sécurité et Cryptographie}
+\begin{frame}{Sécurité et Authentification}
+	La sécurité est au cœur du système, mise en œuvre grâce au framework \textbf{Spring Security} :
+	
+	\begin{itemize}
+		\item \textbf{JSON Web Tokens (JWT)} : Authentification sans état (stateless) via des tokens signés numériquement.
+		\item \textbf{Protection des Mots de passe} : Hachage avec l'algorithme BCrypt en base de données.
+		\item \textbf{RBAC (Role-Based Access Control)} : Différenciation stricte entre les rôles \texttt{USER} et \texttt{ADMIN}.
+		\item \textbf{Traçabilité (Audit)} : Enregistrement continu des actions sensibles (connexions, requêtes d'administration) pour analyse.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Mécanismes de Chiffrement (Confidentialité)}
+	\begin{block}{Chiffrement Asymétrique (RSA)}
+		\begin{itemize}
+			\item \textbf{Génération de paires de clés} : Création mathématique de clés publiques (distribuées) et privées (strictement confidentielles).
+			\item \textbf{Cas d'usage} : Échange sécurisé de clés de session ou de données critiques. Assure la confidentialité absolue sans partage de secret préalable.
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{Chiffrement Symétrique (AES)}
+		\begin{itemize}
+			\item \textbf{Performance} : Algorithme AES (Advanced Encryption Standard), le standard mondial de l'industrie.
+			\item \textbf{Cas d'usage} : Chiffrement lourd et ultra-rapide pour les fichiers volumineux et textes longs.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Intégrité, Authenticité et Non-Répudiation}
+	\begin{alertblock}{Hachage Cryptographique (SHA-256 \& SHA-512)}
+		Génération d'une empreinte numérique unique pour un document. \\
+		$\Rightarrow$ \textbf{Garantie d'Intégrité} : L'effet d'avalanche assure que la moindre altération d'un bit du fichier modifie totalement son empreinte.
+	\end{alertblock}
+	
+	\begin{examples}{Signature Numérique (RSA avec SHA-256)}
+		\begin{itemize}
+			\item \textbf{Signature} : L'expéditeur chiffre l'empreinte du fichier avec sa \textit{clé privée}.
+			\item \textbf{Vérification} : Le destinataire utilise la \textit{clé publique} de l'expéditeur.
+			\item \textbf{Objectif atteint} : Preuve mathématique irréfutable de l'identité de l'auteur (\textit{Authenticité}) et impossibilité pour lui de nier son acte (\textit{Non-Répudiation}).
+		\end{itemize}
+	\end{examples}
+\end{frame}
+
+\begin{frame}{Fournisseur de Sécurité : Bouncy Castle}
+	\begin{columns}[c] 
+		
+		\column{.45\textwidth} 
+		\textbf{Pourquoi Bouncy Castle ?}
+		\begin{itemize}
+			\item Les fournisseurs natifs de Java (comme \textbf{SunJCE}) peuvent parfois manquer de flexibilité ou restreindre certaines tailles de clés (limitations d'exportation).
+			\item Bouncy Castle est le standard Open Source de l'industrie Java.
+		\end{itemize}
+		
+		\column{.5\textwidth} 
+		\alert{Intégration au Backend}
+		\vspace{0.02\textheight}
+		En l'enregistrant comme \textit{Security Provider} primaire au démarrage de Spring Boot, l'application remplace/complète SunJCE et bénéficie de l'état de l'art de la recherche cryptographique, garantissant robustesse face aux attaques.
+		
+	\end{columns}
+\end{frame}
+
+%------------------------------------------------
+
+\section{Infrastructure DevOps}
+\begin{frame}{Conteneurisation : Docker \& Docker Compose}
+	L'ensemble de l'application a été conteneurisé grâce à la technique du \textbf{Multi-Stage Build} pour optimiser le poids et la sécurité des images de production.
+	
+	\begin{table}
+		\begin{tabular}{l l l}
+			\toprule
+			\textbf{Service Docker} & \textbf{Technologie} & \textbf{Rôle} \\
+			\midrule
+			\texttt{crypto\_frontend} & Nginx Alpine      & Serveur Web Statique Proxy \\
+			\texttt{crypto\_backend}  & Eclipse Temurin 17& Serveur d'Application API \\
+			\texttt{crypto\_mysql}    & MySQL 8.0         & Base de données \\
+			\bottomrule
+		\end{tabular}
+		\caption{Orchestration via Docker Compose}
+	\end{table}
+\end{frame}
+
+\begin{frame}{Orchestration : Kubernetes (K8s)}
+	Pour garantir la haute disponibilité en production, le système a été traduit en manifestes Kubernetes :
+	\vspace{0.03\textheight}
+	
+	\begin{itemize}
+		\item \textbf{Deployments} : Gestion des instances (replicas) pour assurer la redondance du Backend et du Frontend.
+		\item \textbf{Services} : Routage interne et exposition publique via \texttt{LoadBalancer}.
+		\item \textbf{Secrets \& PVC} : Gestion sécurisée des mots de passe MySQL et persistance des données.
+	\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\section{Supervision (Monitoring)}
+\begin{frame}{Supervision : Prometheus \& Grafana}
+	\begin{block}{1. Collecte des Métriques (Actuator + Micrometer)}
+		Le Backend Spring Boot expose en temps réel ses statistiques de santé : mémoire JVM, pics de CPU, utilisation des threads.
+	\end{block}
+	
+	\begin{alertblock}{2. Prometheus}
+		Une base de données temporelle qui "scrape" (aspire) ces données toutes les 15 secondes de manière autonome.
+	\end{alertblock}
+
+	\begin{examples}{3. Tableaux de Bord (Grafana)}
+		Une interface graphique puissante interroge Prometheus pour afficher la charge serveur, le nombre de requêtes HTTP et configurer des alertes critiques.
+	\end{examples}
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\section{Démonstration de l'Application}
+
+\begin{frame}{Interface Utilisateur (Frontend React)}
+	\begin{figure}
+		\centering
+		% Remplacer "example-image-a" par le chemin de votre image, ex: "images/frontend.png"
+		\includegraphics[width=0.7\linewidth, height=0.5\textheight, keepaspectratio]{example-image-a}
+		\caption{Espace de travail : Génération de clés et chiffrement}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Documentation API (Swagger / OpenAPI)}
+	\begin{figure}
+		\centering
+		% Remplacer "example-image-b" par le chemin de votre image, ex: "images/swagger.png"
+		\includegraphics[width=0.7\linewidth, height=0.5\textheight, keepaspectratio]{example-image-b}
+		\caption{Exploration et test des Endpoints de l'API REST}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Supervision et Métriques (Grafana)}
+	\begin{figure}
+		\centering
+		% Remplacer "example-image-c" par le chemin de votre image, ex: "images/grafana.png"
+		\includegraphics[width=0.7\linewidth, height=0.5\textheight, keepaspectratio]{example-image-c}
+		\caption{Tableau de bord : Surveillance de la charge et des ressources}
+	\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+    \Huge{\centerline{Merci de votre attention}}
+    \vspace{0.05\textheight}
+    \large{\centerline{Place aux questions et à la démonstration}}
+\end{frame}
+
+\end{document}

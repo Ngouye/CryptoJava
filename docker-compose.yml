@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: crypto_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: crypto_tdsi_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crypto_backend
+    depends_on:
+      - mysql
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/crypto_tdsi_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=password
+      - CRYPTO_STORAGE_DIRECTORY=/MTDSI
+    ports:
+      - "8080:8080"
+    volumes:
+      - crypto_files:/MTDSI
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: crypto_frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: crypto_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - backend
+
+  grafana:
+    image: grafana/grafana
+    container_name: crypto_grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+volumes:
+  mysql_data:
+  crypto_files:

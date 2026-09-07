@@ -1,0 +1,255 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+
+% Configuration des hyperliens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!80!black,
+    citecolor=blue!80!black,
+    urlcolor=cyan!70!black
+}
+
+% Configuration des listings de code
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.97,0.98}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue!80!black}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{red!70!black},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{gray!30}
+}
+\lstset{style=mystyle}
+
+% En-têtes et pieds de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Projet Crypto-Java - M2 TDSI}}
+\fancyhead[R]{\small\textit{Pr. Demba SOW}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+% ====================================================================
+% PAGE DE GARDE OFFICIELLE TDSI / UCAD
+% ====================================================================
+\begin{titlepage}
+    \begin{center}
+        {\bfseries\large UNIVERSITÉ CHEIKH ANTA DIOP DE DAKAR (UCAD)}\\[0.2cm]
+        {\bfseries\normalsize FACULTÉ DES SCIENCES ET TECHNIQUES (FST)}\\[0.2cm]
+        {\bfseries\normalsize DÉPARTEMENT DE MATHÉMATIQUES ET INFORMATIQUE}\\[0.2cm]
+        {\bfseries\normalsize LABORATOIRE D'ALGÈBRE, DE CRYPTOLOGIE, DE GÉOMÉTRIE ALGÉBRIQUE ET APPLICATIONS (LACGAA)}\\[0.8cm]
+
+        \rule{\linewidth}{0.8mm}\\[0.4cm]
+        {\LARGE\bfseries PROJET DE CRYPTOGRAPHIE JAVA}\\[0.2cm]
+        {\Large\bfseries Conception et Développement d'une Application Web Moderne de Chiffrement, Hachage et Signature de Données}\\[0.2cm]
+        \rule{\linewidth}{0.8mm}\\[0.8cm]
+
+        {\large\bfseries Filière :} Transmission de Données et Sécurité de l'Information (TDSI)\\[0.2cm]
+        {\large\bfseries Classe :} Master 2 TDSI / Mathématiques-Cryptographie-Sécurité (MCS)\\[0.2cm]
+        {\large\bfseries Année Universitaire :} 2025 - 2026\\[1.2cm]
+
+        \begin{minipage}{0.45\textwidth}
+            \begin{flushleft} \large
+                \emph{\textbf{Présenté par :}}\\[0.1cm]
+                \textbf{[Prénom NOM de l'Étudiant]}\\
+                Étudiant en Master 2 TDSI
+            \end{flushleft}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.45\textwidth}
+            \begin{flushright} \large
+                \emph{\textbf{Sous la direction de :}}\\[0.1cm]
+                \textbf{Pr. Demba SOW}\\
+                Enseignant-Chercheur (UCAD/LACGAA)
+            \end{flushright}
+        \end{minipage}
+
+        \vfill
+        {\large Dakar, Sénégal -- Septembre 2026}
+    \end{center}
+\end{titlepage}
+
+% ====================================================================
+% TABLE DES MATIÈRES
+% ====================================================================
+\tableofcontents
+\newpage
+
+% ====================================================================
+% INTRODUCTION
+% ====================================================================
+\chapter{Introduction Générale}
+
+Dans le cadre du programme d'excellence du **Master 2 Transmission de Données et Sécurité de l'Information (TDSI)** dispensé à la Faculté des Sciences et Techniques de l'Université Cheikh Anta Diop de Dakar (UCAD), le module de **Cryptographie-JAVA**, sous la responsabilité du **Pr. Demba SOW**, constitue un socle fondamental pour la maîtrise pratique des primitives de sécurité logicielle.
+
+Ce projet a pour objectif la conception et l'implémentation d'une application cryptographique complète intégrant l'ensemble des concepts étudiés au cours des travaux pratiques (TP1 à TP4) :
+\begin{enumerate}
+    \item La génération, le formatage (X.509, PKCS\#8, Hex, Base64) et la persistance des clés symétriques et asymétriques ;
+    \item Le chiffrement et déchiffrement symétrique (AES, DES, 3DES, Blowfish) et asymétrique (RSA) sur des flux textuels et des fichiers binaires ;
+    \item Les fonctions de hachage à sens unique pour l'intégrité (MD5, SHA-1, SHA-256, SHA-512) et les codes d'authentification de message avec clé secrète (HMAC) ;
+    \item La signature électronique numérique (RSA, DSA, ECDSA) avec ou sans hachage préalable explicite, ainsi que le protocole de vérification d'authenticité et de non-répudiation.
+\end{enumerate}
+
+Pour répondre aux exigences des standards actuels de l'ingénierie logicielle, nous avons opté pour une **Architecture Web Moderne (Option 2)** dissociant rigoureusement la logique métier via une **API REST Spring Boot** en Java et une interface utilisateur interactive conçue avec **React.js**.
+
+\newpage
+
+% ====================================================================
+% CHAPITRE 1 : CONTEXTE CRYPTOGRAPHIQUE & FONDEMENTS
+% ====================================================================
+\chapter{Contexte Cryptographique et Fondements Théoriques}
+
+\section{Architecture de Sécurité Java (JCA / JCE)}
+L'API Java Cryptography Architecture (JCA) et l'extension Java Cryptography Extension (JCE) reposent sur un modèle modulaire basé sur des fournisseurs de services (\textit{Security Providers}). Notre application intègre dynamiquement le provider **Bouncy Castle** (\texttt{BouncyCastleProvider}) ainsi que les providers standards de la machine virtuelle Java (SunJCE, SunEC).
+
+\begin{lstlisting}[language=Java, caption=Enregistrement dynamique du Provider Bouncy Castle]
+if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+    Security.addProvider(new BouncyCastleProvider());
+}
+\end{lstlisting}
+
+\section{Synthèse des Travaux Pratiques (TP1 à TP4)}
+\begin{itemize}
+    \item \textbf{TP1 (Génération et Encodage des Clés Symétriques) :} Utilisation de \texttt{KeyGenerator} pour AES (128, 192, 256 bits), conversion hexadécimale via \texttt{Utils.toHex(byte[])}, et sérialisation/persistance sur support de stockage.
+    \item \textbf{TP2 (Cryptographie Asymétrique RSA / DSA / ECDSA) :} Génération des paires de clés via \texttt{KeyPairGenerator}, sérialisation au format standardisé X.509 pour la clé publique et PKCS\#8 pour la clé privée, et accord de clés Diffie-Hellman (\texttt{KeyAgreement}).
+    \item \textbf{TP3 (Chiffrement par Blocs et Traitement par Flux) :} Utilisation de la classe \texttt{Cipher} avec modes d'opération (CBC, GCM, ECB) et rembourrage \texttt{PKCS5Padding}. Traitement continu de gros fichiers avec \texttt{CipherInputStream} et \texttt{CipherOutputStream}.
+    \item \textbf{TP4 (Intégrité, HMAC et Signatures Numériques) :} Condensats via \texttt{MessageDigest}, authentification par \texttt{Mac} (HmacSHA256), et signatures numériques via l'API \texttt{Signature} avec comparaison entre signature directe et signature en deux étapes.
+\end{itemize}
+
+\newpage
+
+% ====================================================================
+% CHAPITRE 2 : ARCHITECTURE ET CONCEPTION DU SYSTÈME
+% ====================================================================
+\chapter{Architecture Logicielle et Modélisation}
+
+\section{Architecture Globale N-Tiers}
+Le système est articulé autour de deux blocs communicant via des échanges JSON sur protocole HTTP/HTTPS :
+\begin{itemize}
+    \item \textbf{Backend Spring Boot (Port 8080) :} Expose les points de terminaison REST sécurisés par des jetons JWT (JSON Web Tokens) et gère le contrôle d'accès basé sur les rôles (RBAC).
+    \item \textbf{Frontend React.js (Port 5173 / Statique embarqué) :} Interface monopage dynamique (SPA) fournissant des interfaces spécialisées pour chaque module cryptographique.
+\end{itemize}
+
+\section{Modèle de Données Relationnel}
+La persistance est assurée par une base de données relationnelle (MySQL / H2) structurée selon trois tables majeures :
+\begin{enumerate}
+    \item \textbf{\texttt{users}} : Enregistre les identifiants de connexion, le profil (\texttt{admin} ou \texttt{user}), l'état d'activation et l'empreinte BCrypt du mot de passe.
+    \item \textbf{\texttt{crypto\_keys}} : Historise les clés générées par chaque utilisateur avec leur algorithme, taille et encodage (X.509, PKCS\#8, RAW Hex).
+    \item \textbf{\texttt{audit\_logs}} : Journalise de manière horodatée chaque opération cryptographique (chiffrement, hachage, signature) pour des fins de traçabilité et de gouvernance.
+\end{enumerate}
+
+\newpage
+
+% ====================================================================
+% CHAPITRE 3 : GUIDE D'UTILISATION ET CAPTURES D'ÉCRAN
+% ====================================================================
+\chapter{Guide d'Utilisation et Fonctionnalités de l'Application}
+
+\section{Module d'Authentification et Contrôle d'Accès}
+L'application propose deux profils d'accès bien distincts :
+\begin{itemize}
+    \item \textbf{Profil Administrateur (\texttt{admin}) :} Dispose des droits d'administration complète des utilisateurs (création, mise à jour, désactivation, réinitialisation de mot de passe, suppression), de la visualisation des métriques système et de l'accès aux journaux d'audit.
+    \item \textbf{Profil Utilisateur (\texttt{user}) :} Accède au tableau de bord cryptographique pour réaliser toutes les opérations de chiffrement, hachage et signature.
+\end{itemize}
+
+\section{Module 1 : Génération et Sauvegarde des Clés}
+Permet de configurer l'algorithme (AES, DES, 3DES, Blowfish, RSA, DSA, ECDSA), la longueur en bits (128 à 4096 bits), et d'exporter la clé sous plusieurs formats :
+\begin{itemize}
+    \item Encodage Hexadécimal (\texttt{Utils.toHex}) ;
+    \item Encodage Base64 ;
+    \item Format standard PEM (X.509 et PKCS\#8) ;
+    \item Enregistrement direct sur le système de fichiers hôte (répertoire \texttt{C:/MTDSI/}).
+\end{itemize}
+
+\section{Module 2 : Chiffrement et Déchiffrement}
+Offre une interface fluide pour traiter aussi bien des messages textuels que des documents binaires volumineux (.pdf, .docx, .png). Il gère automatiquement la génération et l'application des vecteurs d'initialisation (IV) en mode CBC/GCM.
+
+\section{Module 3 : Hachage et HMAC (Intégrité \& Authenticité)}
+Calcule en temps réel les empreintes numériques (MD5, SHA-1, SHA-256, SHA-512) et les codes HMAC avec clé partagée. Il intègre un vérificateur visuel d'altération détectant toute modification du message source.
+
+\section{Module 4 : Signature Numérique et Vérification}
+Implémente la signature numérique avec clé privée et sa vérification avec clé publique. L'interface affiche un badge explicite confirmant la validité mathématique et l'authenticité de l'auteur.
+
+\newpage
+
+% ====================================================================
+% CHAPITRE 4 : PROCÉDURE DE COMPILATION ET DÉPLOIEMENT
+% ====================================================================
+\chapter{Procédure de Compilation, Déploiement et Livrables}
+
+\section{Compilation du Backend en Fat JAR Exécutable}
+Grâce au plugin \texttt{spring-boot-maven-plugin}, l'ensemble de l'application backend est compilable en un unique fichier JAR autonome embarquant son serveur Tomcat :
+\begin{lstlisting}[language=bash, caption=Commande de génération du JAR exécutable]
+cd backend
+mvn clean package -DskipTests
+\end{lstlisting}
+Le fichier généré \texttt{crypto-java-backend-1.0.0.jar} peut être lancé directement via :
+\begin{lstlisting}[language=bash, caption=Lancement de l'application JAR]
+java -jar target/crypto-java-backend-1.0.0.jar
+\end{lstlisting}
+
+\section{Démarrage de l'Interface React}
+\begin{lstlisting}[language=bash, caption=Commandes de démarrage du Frontend React]
+cd frontend
+npm install
+npm run dev
+\end{lstlisting}
+L'application est alors accessible à l'adresse : \texttt{http://localhost:5173}.
+
+\section{Organisation du Dossier de Livraison}
+Conformément aux instructions du Pr. Demba SOW, les livrables sont organisés dans un répertoire structuré :
+\begin{tcolorbox}[colback=gray!5,colframe=blue!70!black,title=Structure du Dossier de Remise (Prenom-Nom)]
+\begin{itemize}
+    \item \textbf{\texttt{jar/}} : Contient le fichier exécutable \texttt{crypto-java-backend-1.0.0.jar}.
+    \item \textbf{\texttt{sql/}} : Contient le script d'initialisation et d'export SQL \texttt{crypto\_tdsi\_database.sql}.
+    \item \textbf{\texttt{rapport/}} : Contient les fichiers source LaTeX (\texttt{.tex}) et le document final compilé (\texttt{.pdf}).
+    \item \textbf{\texttt{src/}} : Contient l'intégralité du code source Backend et Frontend React.
+\end{itemize}
+\end{tcolorbox}
+
+\newpage
+
+% ====================================================================
+% CONCLUSION
+% ====================================================================
+\chapter{Conclusion et Perspectives}
+
+Ce projet a permis de concrétiser les acquis théoriques et pratiques du cours de Cryptographie-JAVA du Master 2 TDSI. L'adoption d'une architecture client-serveur moderne couplée à la robustesse des API cryptographiques de Java (JCA/JCE et Bouncy Castle) offre une solution performante, sécurisée et ergonomique.
+
+En perspective, l'application pourrait être étendue par l'intégration d'une infrastructure à clés publiques complète (PKI avec génération de certificats X.509 auto-signés), le chiffrement homomorphe et l'implémentation des nouveaux algorithmes de cryptographie post-quantique (NIST PQC).
+
+\end{document}
