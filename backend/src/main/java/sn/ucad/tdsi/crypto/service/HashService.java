@@ -46,7 +46,7 @@ public class HashService {
 
                 byte[] keyBytes = request.getCleMac().getBytes(StandardCharsets.UTF_8);
                 SecretKeySpec keySpec = new SecretKeySpec(keyBytes, hmacAlgo);
-                Mac mac = Mac.getInstance(hmacAlgo);
+                Mac mac = Mac.getInstance(hmacAlgo, "BC");
                 mac.init(keySpec);
                 digestBytes = mac.doFinal(inputBytes);
 
@@ -55,15 +55,15 @@ public class HashService {
 
             } else {
                 // Hachage sans clé (MessageDigest)
-                MessageDigest md = MessageDigest.getInstance(algo);
+                MessageDigest md = MessageDigest.getInstance(algo, "BC");
                 digestBytes = md.digest(inputBytes);
 
                 // Multi-hash bonus (calcul simultané des standards pour comparaison d'intégrité)
                 Map<String, String> multi = new HashMap<>();
-                multi.put("MD5", CryptoUtils.toHex(MessageDigest.getInstance("MD5").digest(inputBytes)));
-                multi.put("SHA-1", CryptoUtils.toHex(MessageDigest.getInstance("SHA-1").digest(inputBytes)));
-                multi.put("SHA-256", CryptoUtils.toHex(MessageDigest.getInstance("SHA-256").digest(inputBytes)));
-                multi.put("SHA-512", CryptoUtils.toHex(MessageDigest.getInstance("SHA-512").digest(inputBytes)));
+                multi.put("MD5", CryptoUtils.toHex(MessageDigest.getInstance("MD5", "BC").digest(inputBytes)));
+                multi.put("SHA-1", CryptoUtils.toHex(MessageDigest.getInstance("SHA-1", "BC").digest(inputBytes)));
+                multi.put("SHA-256", CryptoUtils.toHex(MessageDigest.getInstance("SHA-256", "BC").digest(inputBytes)));
+                multi.put("SHA-512", CryptoUtils.toHex(MessageDigest.getInstance("SHA-512", "BC").digest(inputBytes)));
                 response.setMultiHashes(multi);
 
                 response.setMessage("Condensat d'intégrité (" + algo + ") calculé avec succès.");

@@ -139,67 +139,140 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Preuve : Base de Données (MySQL)}
+	\begin{figure}
+		\centering
+		% Remplacer "example-image" par le nom de votre capture d'écran (ex: capture-bdd.png)
+		\includegraphics[width=0.8\linewidth, height=0.6\textheight, keepaspectratio]{example-image}
+		\caption{Capture d'écran : Tables et données (ex: phpMyAdmin ou console MySQL)}
+	\end{figure}
+\end{frame}
+
 %------------------------------------------------
 
-\section{Sécurité et Cryptographie}
-\begin{frame}{Sécurité et Authentification}
-	La sécurité est au cœur du système, mise en œuvre grâce au framework \textbf{Spring Security} :
-	
+\section{Sécurité Applicative (Spring Security \& JWT)}
+
+\begin{frame}{Sécurisation de l'API avec Spring Security}
+	L'application protège ses ressources de manière rigoureuse en utilisant \textbf{Spring Security} :
+	\vspace{0.03\textheight}
 	\begin{itemize}
-		\item \textbf{JSON Web Tokens (JWT)} : Authentification sans état (stateless) via des tokens signés numériquement.
-		\item \textbf{Protection des Mots de passe} : Hachage avec l'algorithme BCrypt en base de données.
-		\item \textbf{RBAC (Role-Based Access Control)} : Différenciation stricte entre les rôles \texttt{USER} et \texttt{ADMIN}.
-		\item \textbf{Traçabilité (Audit)} : Enregistrement continu des actions sensibles (connexions, requêtes d'administration) pour analyse.
+		\item \textbf{Filtres d'Interception (FilterChain)} : Toute requête HTTP entrante est interceptée et analysée avant d'atteindre la logique métier.
+		\item \textbf{AuthenticationManager} : Responsable de valider les identifiants (mot de passe haché) lors de la tentative de connexion via l'interface \texttt{UserDetailsService}.
+		\item \textbf{Protection des Endpoints} : Verrouillage strict de l'API REST. Seul l'endpoint de connexion (\texttt{/auth/login}) est public ; tous les autres exigent une authentification valide.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Mécanismes de Chiffrement (Confidentialité)}
-	\begin{block}{Chiffrement Asymétrique (RSA)}
-		\begin{itemize}
-			\item \textbf{Génération de paires de clés} : Création mathématique de clés publiques (distribuées) et privées (strictement confidentielles).
-			\item \textbf{Cas d'usage} : Échange sécurisé de clés de session ou de données critiques. Assure la confidentialité absolue sans partage de secret préalable.
-		\end{itemize}
+\begin{frame}{Authentification Stateless : JSON Web Token (JWT)}
+	Pour gérer les sessions sans surcharger la mémoire du serveur (\textit{Stateless}), l'application s'appuie sur la norme \textbf{JWT}.
+	\vspace{0.03\textheight}
+	\begin{block}{Génération et Utilisation du Jeton}
+		\begin{enumerate}
+			\item \textbf{Création} : Lors d'un login réussi, le backend génère un jeton contenant les informations de l'utilisateur (Payload).
+			\item \textbf{Signature Cryptographique} : Ce jeton est \textbf{signé numériquement} (souvent avec un HMAC-SHA256) pour garantir qu'il ne soit jamais falsifié par le client.
+			\item \textbf{Transmission} : Le client stocke le jeton et l'envoie dans l'en-tête HTTP (\texttt{Authorization: Bearer <token>}) à chaque nouvelle requête. Le filtre Spring vérifie alors la signature avant d'autoriser l'accès.
+		\end{enumerate}
 	\end{block}
-	
-	\begin{block}{Chiffrement Symétrique (AES)}
+\end{frame}
+
+\begin{frame}{Implémentation : Le Package \texttt{config}}
+	L'architecture de sécurité est centralisée dans le package \textbf{\texttt{config}}, qui orchestre ces mécanismes via plusieurs classes dédiées :
+	\vspace{0.02\textheight}
+	\begin{itemize}
+		\item \textbf{\texttt{SecurityConfig}} : Cœur de la sécurité. Définit la \texttt{SecurityFilterChain}, désactive le CSRF (inutile en Stateless), et configure les autorisations d'URL.
+		\item \textbf{\texttt{JwtAuthenticationFilter}} : Composant critique (\texttt{OncePerRequestFilter}) interceptant chaque requête HTTP pour extraire, vérifier et valider la signature du jeton JWT.
+		\item \textbf{\texttt{JwtUtils}} : Utilitaire cryptographique gérant la création du jeton, sa signature HMAC-SHA, et l'extraction sécurisée des données (Claims).
+		\item \textbf{\texttt{ApplicationConfig} \& \texttt{CorsConfig}} : Injection de l'\texttt{AuthenticationProvider}, du \texttt{PasswordEncoder} (BCrypt), et gestion des requêtes cross-origin pour React.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Preuve : Authentification et JWT}
+	\begin{figure}
+		\centering
+		% Remplacer "example-image" par le nom de votre capture d'écran (ex: capture-jwt.png)
+		\includegraphics[width=0.8\linewidth, height=0.6\textheight, keepaspectratio]{example-image}
+		\caption{Capture d'écran : Obtention du jeton (Postman/Swagger) et accès sécurisé}
+	\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\section{Cryptographie (JCA \& JCE)}
+
+\begin{frame}{Architecture Cryptographique Java (JCA/JCE)}
+	\begin{block}{Cryptographic Service Provider (CSP)}
+		Le moteur de sécurité de l'application repose sur l'architecture standard de Java (\textbf{JCA} et \textbf{JCE}).
 		\begin{itemize}
-			\item \textbf{Performance} : Algorithme AES (Advanced Encryption Standard), le standard mondial de l'industrie.
-			\item \textbf{Cas d'usage} : Chiffrement lourd et ultra-rapide pour les fichiers volumineux et textes longs.
+			\item \textbf{Provider natif} : Java propose par défaut des fournisseurs comme \texttt{SunJCE} et \texttt{SunRsaSign}.
+			\item \textbf{Provider tiers (Bouncy Castle)} : Pour pallier certaines limitations (comme les restrictions de tailles de clés) et intégrer des algorithmes modernes, le \textbf{\texttt{BouncyCastleProvider}} a été enregistré dynamiquement via la classe \texttt{Security} au démarrage du Backend.
 		\end{itemize}
 	\end{block}
 \end{frame}
 
-\begin{frame}{Intégrité, Authenticité et Non-Répudiation}
-	\begin{alertblock}{Hachage Cryptographique (SHA-256 \& SHA-512)}
-		Génération d'une empreinte numérique unique pour un document. \\
-		$\Rightarrow$ \textbf{Garantie d'Intégrité} : L'effet d'avalanche assure que la moindre altération d'un bit du fichier modifie totalement son empreinte.
+\begin{frame}{Gestion des Clés}
+	\begin{alertblock}{Clés Symétriques (\texttt{javax.crypto.SecretKey})}
+		Générées via la classe d'engine \textbf{\texttt{KeyGenerator}} \\
+        Exemple : \texttt{KeyGenerator.getInstance("AES", "BC")} \\
+		Elles garantissent une très haute performance pour le chiffrement de fichiers volumineux.
 	\end{alertblock}
 	
-	\begin{examples}{Signature Numérique (RSA avec SHA-256)}
-		\begin{itemize}
-			\item \textbf{Signature} : L'expéditeur chiffre l'empreinte du fichier avec sa \textit{clé privée}.
-			\item \textbf{Vérification} : Le destinataire utilise la \textit{clé publique} de l'expéditeur.
-			\item \textbf{Objectif atteint} : Preuve mathématique irréfutable de l'identité de l'auteur (\textit{Authenticité}) et impossibilité pour lui de nier son acte (\textit{Non-Répudiation}).
-		\end{itemize}
+	\begin{examples}{Paires de Clés Asymétriques (\texttt{java.security.KeyPair})}
+		Générées via \textbf{\texttt{KeyPairGenerator}} \\
+        Exemple : \texttt{KeyPairGenerator.getInstance("RSA", "BC")} \\
+		Les interfaces \texttt{PublicKey} et \texttt{PrivateKey} sont utilisées pour l'authentification et l'échange sécurisé.
 	\end{examples}
 \end{frame}
 
-\begin{frame}{Fournisseur de Sécurité : Bouncy Castle}
-	\begin{columns}[c] 
-		
-		\column{.45\textwidth} 
-		\textbf{Pourquoi Bouncy Castle ?}
-		\begin{itemize}
-			\item Les fournisseurs natifs de Java (comme \textbf{SunJCE}) peuvent parfois manquer de flexibilité ou restreindre certaines tailles de clés (limitations d'exportation).
-			\item Bouncy Castle est le standard Open Source de l'industrie Java.
-		\end{itemize}
-		
-		\column{.5\textwidth} 
-		\alert{Intégration au Backend}
-		\vspace{0.02\textheight}
-		En l'enregistrant comme \textit{Security Provider} primaire au démarrage de Spring Boot, l'application remplace/complète SunJCE et bénéficie de l'état de l'art de la recherche cryptographique, garantissant robustesse face aux attaques.
-		
-	\end{columns}
+\begin{frame}{Gestion des Clés : Persistance et Sérialisation}
+	Afin de pouvoir réutiliser une clé secrète générée, l'application implémente des mécanismes de persistance physique via la \textbf{Sérialisation Java}.
+	\vspace{0.02\textheight}
+	\begin{itemize}
+		\item \textbf{Sauvegarde (Export)} : Écriture de l'objet clé sur le disque physique à l'aide de \texttt{ObjectOutputStream.writeObject(secretKey)}.
+		\item \textbf{Restauration (Import)} : Reconstruction de la clé en mémoire depuis le fichier de sauvegarde via \texttt{ObjectInputStream.readObject()}.
+		\item \textbf{Vérification d'intégrité} : La comparaison des objets (\texttt{sk.equals(sk2)}) confirme que la clé chargée est mathématiquement identique à la clé générée, sans aucune altération.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Processus de Chiffrement et Déchiffrement}
+	\begin{block}{Cryptographie Symétrique (ex: AES)}
+		\textbf{Principe} : Une même clé secrète sert à chiffrer et déchiffrer. L'algorithme découpe les données en blocs (mode CBC) et utilise un Vecteur d'Initialisation (IV) pour garantir l'aléatoire.\\
+		\textbf{Code} : \texttt{cipher.init(Cipher.ENCRYPT\_MODE, secretKey, ivSpec)} puis \texttt{doFinal()}
+	\end{block}
+	
+	\begin{block}{Cryptographie Asymétrique (ex: RSA)}
+		\textbf{Principe} : Utilisation d'un bi-clé. La \textbf{Clé Publique} chiffre le message (accessible à tous), mais seule la \textbf{Clé Privée} (gardée secrète) peut le déchiffrer. Ce processus est mathématiquement lourd mais idéal pour échanger des clés de session de manière sécurisée.\\
+		\textbf{Code} : \texttt{cipher.init(Cipher.DECRYPT\_MODE, privateKey)}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Fonctions de Hachage et HMAC}
+	\begin{alertblock}{Le Hachage (ex: SHA-256)}
+		\textbf{Principe} : Fonction mathématique à sens unique (\textit{one-way}). Elle prend un document de taille variable et retourne une empreinte numérique unique de taille fixe. Une infime modification du document change totalement l'empreinte (\textit{effet avalanche}).\\
+		\textbf{Code} : \texttt{MessageDigest.getInstance("SHA-256", "BC").digest(data)}
+	\end{alertblock}
+	
+	\begin{examples}{Le HMAC (Hashed Message Authentication Code)}
+		\textbf{Principe} : C'est un hachage combiné à une \textbf{Clé Secrète}. Il garantit à la fois que le fichier n'a pas été altéré (intégrité) ET qu'il provient bien d'une source autorisée (authentification).\\
+		\textbf{Code} : \texttt{Mac.getInstance("HmacSHA256", "BC").doFinal(data)}
+	\end{examples}
+\end{frame}
+
+\begin{frame}{Le Mécanisme de la Signature Numérique}
+	La signature numérique garantit de façon asymétrique l'origine (\textbf{Authentification}) et l'impossibilité de nier l'envoi (\textbf{Non-Répudiation}).
+	\vspace{0.03\textheight}
+	\begin{itemize}
+		\item \textbf{1. Émission (Signature)} : L'expéditeur hache d'abord le document pour obtenir son empreinte. Il \textbf{chiffre ensuite cette empreinte avec sa Clé Privée} (\texttt{signature.initSign(privateKey)} puis \texttt{sign()}).
+		\item \textbf{2. Réception (Vérification)} : Le destinataire utilise la \textbf{Clé Publique} de l'expéditeur pour déchiffrer la signature (\texttt{signature.initVerify(publicKey)}).
+		\item \textbf{3. Validation} : Si l'empreinte déchiffrée (\texttt{verify()}) correspond exactement au hachage local du document, ce dernier est 100\% authentique et intact.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Preuve : Opérations Cryptographiques}
+	\begin{figure}
+		\centering
+		% Remplacer "example-image" par le nom de votre capture d'écran (ex: capture-crypto.png)
+		\includegraphics[width=0.8\linewidth, height=0.6\textheight, keepaspectratio]{example-image}
+		\caption{Capture d'écran : Chiffrement, hachage ou signature en cours d'exécution}
+	\end{figure}
 \end{frame}
 
 %------------------------------------------------
@@ -231,6 +304,15 @@
 		\item \textbf{Services} : Routage interne et exposition publique via \texttt{LoadBalancer}.
 		\item \textbf{Secrets \& PVC} : Gestion sécurisée des mots de passe MySQL et persistance des données.
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Preuve : Déploiement Docker \& Kubernetes}
+	\begin{figure}
+		\centering
+		% Remplacer "example-image" par le nom de votre capture d'écran (ex: capture-docker.png)
+		\includegraphics[width=0.8\linewidth, height=0.6\textheight, keepaspectratio]{example-image}
+		\caption{Capture d'écran : Conteneurs actifs (\texttt{docker ps}) ou Pods Kubernetes}
+	\end{figure}
 \end{frame}
 
 %------------------------------------------------

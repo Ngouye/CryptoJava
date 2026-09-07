@@ -52,16 +52,16 @@ public class AsymCryptoService {
             KeyPair kp;
 
             if ("ECDSA".equalsIgnoreCase(algo) || "EC".equalsIgnoreCase(algo)) {
-                kpg = KeyPairGenerator.getInstance("EC");
+                kpg = KeyPairGenerator.getInstance("EC", "BC");
                 String curve = (keySize == 384) ? "secp384r1" : (keySize == 521 ? "secp521r1" : "secp256r1");
                 kpg.initialize(new ECGenParameterSpec(curve), new SecureRandom());
                 kp = kpg.generateKeyPair();
             } else if ("DSA".equalsIgnoreCase(algo)) {
-                kpg = KeyPairGenerator.getInstance("DSA");
+                kpg = KeyPairGenerator.getInstance("DSA", "BC");
                 kpg.initialize(keySize >= 2048 ? 2048 : 1024, new SecureRandom());
                 kp = kpg.generateKeyPair();
             } else { // RSA par défaut
-                kpg = KeyPairGenerator.getInstance("RSA");
+                kpg = KeyPairGenerator.getInstance("RSA", "BC");
                 kpg.initialize(keySize, new SecureRandom());
                 kp = kpg.generateKeyPair();
             }
@@ -165,7 +165,7 @@ public class AsymCryptoService {
                     ? "RSA/ECB/OAEPWithSHA-256AndMGF1Padding"
                     : "RSA/ECB/PKCS1Padding";
 
-            Cipher cipher = Cipher.getInstance(padding);
+            Cipher cipher = Cipher.getInstance(padding, "BC");
 
             if (isEncrypt) {
                 // Chiffrement avec clé publique
@@ -230,7 +230,7 @@ public class AsymCryptoService {
         }
 
         X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
+        KeyFactory kf = KeyFactory.getInstance("RSA", "BC");
         return kf.generatePublic(spec);
     }
 
@@ -247,7 +247,7 @@ public class AsymCryptoService {
         }
 
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
+        KeyFactory kf = KeyFactory.getInstance("RSA", "BC");
         return kf.generatePrivate(spec);
     }
 

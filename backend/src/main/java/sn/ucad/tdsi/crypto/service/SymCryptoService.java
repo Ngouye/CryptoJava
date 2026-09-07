@@ -61,7 +61,7 @@ public class SymCryptoService {
                 if (keySize != 128 && keySize != 192 && keySize != 256) keySize = 256;
             }
 
-            KeyGenerator kg = KeyGenerator.getInstance(algo);
+            KeyGenerator kg = KeyGenerator.getInstance(algo, "BC");
             kg.init(keySize, new SecureRandom());
             SecretKey secretKey = kg.generateKey();
 
@@ -140,7 +140,7 @@ public class SymCryptoService {
                 transformation = "RC4";
             }
 
-            Cipher cipher = Cipher.getInstance(transformation);
+            Cipher cipher = Cipher.getInstance(transformation, "BC");
             byte[] ivBytes;
 
             if (isEncrypt) {
@@ -228,7 +228,7 @@ public class SymCryptoService {
     public void processFileCipher(String algo, byte[] keyBytes, InputStream in, OutputStream out, boolean encrypt, byte[] iv) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(keyBytes, algo);
         String transformation = algo + "/CBC/PKCS5Padding";
-        Cipher cipher = Cipher.getInstance(transformation);
+        Cipher cipher = Cipher.getInstance(transformation, "BC");
 
         if (iv != null) {
             cipher.init(encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, keySpec, new IvParameterSpec(iv));

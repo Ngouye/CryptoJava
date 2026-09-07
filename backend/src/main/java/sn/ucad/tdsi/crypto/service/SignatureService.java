@@ -34,19 +34,19 @@ public class SignatureService {
             if (request.isAvecHachagePrealable()) {
                 // Mode 2 étapes (TP4 / SystemeAsymetrique) : Hash puis Signature du digest
                 String hashAlgo = request.getAlgorithmeHachage() != null ? request.getAlgorithmeHachage() : "SHA-256";
-                MessageDigest md = MessageDigest.getInstance(hashAlgo);
+                MessageDigest md = MessageDigest.getInstance(hashAlgo, "BC");
                 byte[] digest = md.digest(messageBytes);
                 response.setEmpreinteHachageHex(CryptoUtils.toHex(digest));
 
                 // Signature du condensat avec l'algorithme brut correspondant (ex: "NONEwithRSA" ou "NONEwithECDSA")
                 String rawSigAlgo = "NONEwith" + keyType;
-                Signature signature = Signature.getInstance(rawSigAlgo);
+                Signature signature = Signature.getInstance(rawSigAlgo, "BC");
                 signature.initSign(privateKey);
                 signature.update(digest);
                 signatureBytes = signature.sign();
             } else {
                 // Signature directe standard (SHA256withRSA, etc.)
-                Signature signature = Signature.getInstance(sigAlgo);
+                Signature signature = Signature.getInstance(sigAlgo, "BC");
                 signature.initSign(privateKey);
                 signature.update(messageBytes);
                 signatureBytes = signature.sign();
@@ -95,16 +95,16 @@ public class SignatureService {
 
             if (request.isAvecHachagePrealable()) {
                 String hashAlgo = request.getAlgorithmeHachage() != null ? request.getAlgorithmeHachage() : "SHA-256";
-                MessageDigest md = MessageDigest.getInstance(hashAlgo);
+                MessageDigest md = MessageDigest.getInstance(hashAlgo, "BC");
                 byte[] digest = md.digest(messageBytes);
 
                 String rawSigAlgo = "NONEwith" + keyType;
-                Signature signature = Signature.getInstance(rawSigAlgo);
+                Signature signature = Signature.getInstance(rawSigAlgo, "BC");
                 signature.initVerify(publicKey);
                 signature.update(digest);
                 isValid = signature.verify(sigBytes);
             } else {
-                Signature signature = Signature.getInstance(sigAlgo);
+                Signature signature = Signature.getInstance(sigAlgo, "BC");
                 signature.initVerify(publicKey);
                 signature.update(messageBytes);
                 isValid = signature.verify(sigBytes);
@@ -150,7 +150,7 @@ public class SignatureService {
         }
 
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance(keyType.equals("EC") ? "EC" : keyType);
+        KeyFactory kf = KeyFactory.getInstance(keyType.equals("EC") ? "EC" : keyType, "BC");
         return kf.generatePrivate(spec);
     }
 
@@ -167,7 +167,7 @@ public class SignatureService {
         }
 
         X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance(keyType.equals("EC") ? "EC" : keyType);
+        KeyFactory kf = KeyFactory.getInstance(keyType.equals("EC") ? "EC" : keyType, "BC");
         return kf.generatePublic(spec);
     }
 }
