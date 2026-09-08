@@ -326,6 +326,42 @@ export default function SignatureModule() {
           </div>
         )}
       </div>
+      {/* Documentation Détaillée : Signature */}
+      <div className="glass-card animate-fade-in" style={{ padding: '32px', gridColumn: '1 / -1', marginTop: '16px' }}>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '24px', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+          📖 Comprendre la Signature Numérique (X.509)
+        </h3>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+          {/* Bloc Principe */}
+          <div style={{ background: 'var(--bg-input)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--accent-cyan)' }}>1. Le principe de Non-Répudiation</h4>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
+              La signature numérique utilise la <strong>cryptographie asymétrique (RSA/DSA)</strong> à l'envers. Au lieu de chiffrer avec la clé publique, on "chiffre" l'empreinte du document avec notre <strong>Clé Privée</strong>.
+            </p>
+            <ul style={{ paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.6' }}>
+              <li><strong>Signature</strong> : Vous hachez le message (ex: SHA-256), puis vous signez ce hachage avec votre clé privée.</li>
+              <li><strong>Vérification</strong> : Tout le monde peut utiliser votre Clé Publique pour vérifier que la signature correspond bien au document.</li>
+            </ul>
+            <div style={{ background: 'rgba(6, 182, 212, 0.1)', borderLeft: '3px solid var(--accent-cyan)', padding: '12px', fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+              <strong>Bénéfices :</strong> Cela garantit à la fois l'<strong>Intégrité</strong> (le document n'a pas été modifié) et l'<strong>Authenticité / Non-Répudiation</strong> (vous ne pouvez pas nier avoir signé ce document, puisque vous seul possédez la clé privée).
+            </div>
+          </div>
+
+          {/* Bloc Algorithmes */}
+          <div style={{ background: 'var(--bg-input)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--accent-purple)' }}>2. Les Algorithmes de Signature</h4>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
+              Une signature numérique est toujours la combinaison d'une fonction de hachage et d'un algorithme à clé publique.
+            </p>
+            <ul style={{ paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.6' }}>
+              <li><strong>SHA256withRSA</strong> : Le standard absolu (PKCS#1 v1.5). Utilise SHA-256 pour hacher et RSA pour signer. Requis pour les certificats SSL/TLS modernes.</li>
+              <li><strong>SHA512withRSA</strong> : Version encore plus sécurisée, privilégiée pour les documents de très haute importance légale (contrats d'État, transactions bancaires massives).</li>
+              <li><strong>ECDSA (Elliptic Curves)</strong> : Souvent vu sous le nom <code>SHA256withECDSA</code>, il est beaucoup plus rapide et produit des signatures plus petites, ce qui est idéal pour la blockchain (Bitcoin, Ethereum).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

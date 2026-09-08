@@ -244,6 +244,41 @@ export default function HashModule() {
           </div>
         )}
       </div>
+      {/* Documentation Détaillée : Hachage */}
+      <div className="glass-card animate-fade-in" style={{ padding: '32px', gridColumn: '1 / -1', marginTop: '16px' }}>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '24px', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+          📖 Comprendre le Hachage et l'Intégrité des Données
+        </h3>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+          {/* Bloc Fonctions de Hachage */}
+          <div style={{ background: 'var(--bg-input)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--accent-cyan)' }}>1. Fonctions de Hachage (Message Digest)</h4>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
+              Le hachage (ou condensat) est une fonction mathématique à <strong>sens unique</strong>. Il prend un fichier de n'importe quelle taille en entrée et génère une empreinte de taille fixe. Il est impossible de retrouver le texte d'origine à partir du hachage.
+            </p>
+            <ul style={{ paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.6' }}>
+              <li><strong>SHA-256 / SHA-512</strong> : (Secure Hash Algorithm 2). C'est le standard industriel actuel. Résistant aux collisions. Idéal pour certifier qu'un document n'a pas été altéré.</li>
+              <li><strong>MD5 / SHA-1</strong> : Algorithmes obsolètes. Des chercheurs ont prouvé qu'il est possible de générer deux fichiers différents ayant le même hachage (attaque par collision). À ne plus utiliser pour la sécurité.</li>
+            </ul>
+            <div style={{ background: 'rgba(6, 182, 212, 0.1)', borderLeft: '3px solid var(--accent-cyan)', padding: '12px', fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+              <strong>L'Effet d'Avalanche :</strong> Modifier un seul caractère dans un texte de 1000 pages modifiera plus de 50% des bits de l'empreinte finale. C'est ce qui rend la vérification d'intégrité si fiable.
+            </div>
+          </div>
+
+          {/* Bloc HMAC */}
+          <div style={{ background: 'var(--bg-input)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--accent-purple)' }}>2. HMAC (Keyed-Hash Message Auth)</h4>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
+              Le HMAC combine une fonction de hachage (comme SHA-256) avec <strong>une clé secrète</strong> partagée entre l'expéditeur et le destinataire.
+            </p>
+            <ul style={{ paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.6' }}>
+              <li><strong>Intégrité + Authenticité</strong> : Le hachage simple prouve seulement que le document n'a pas changé. Le HMAC prouve en plus que le document a été créé par quelqu'un possédant la clé secrète.</li>
+              <li><strong>Utilisation courante</strong> : Les tokens JWT (JSON Web Tokens) utilisent très souvent HMAC-SHA256 pour éviter qu'un utilisateur ne falsifie ses propres droits d'accès.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -376,6 +376,46 @@ export default function KeyGenModule() {
           </div>
         </div>
       )}
+
+      {/* Documentation Détaillée : KeyGen */}
+      <div className="glass-card animate-fade-in" style={{ padding: '32px', gridColumn: '1 / -1', marginTop: '16px' }}>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '24px', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+          📖 Comprendre la Génération de Clés Cryptographiques
+        </h3>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+          {/* Bloc Symétrique */}
+          <div style={{ background: 'var(--bg-input)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--accent-cyan)' }}>1. Cryptographie Symétrique (SecretKey)</h4>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
+              La cryptographie symétrique utilise <strong>une seule et même clé</strong> pour le chiffrement et le déchiffrement. Cette clé doit rester absolument secrète et être partagée via un canal sécurisé.
+            </p>
+            <ul style={{ paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.6' }}>
+              <li><strong>AES (Advanced Encryption Standard)</strong> : Le standard actuel du gouvernement américain. Recommandé en 256 bits pour une sécurité de niveau militaire (Top Secret).</li>
+              <li><strong>DES / 3DES</strong> : Anciens standards obsolètes (56 bits), vulnérables aux attaques par force brute modernes. Le 3DES applique l'algorithme 3 fois (168 bits) mais reste lent.</li>
+              <li><strong>Blowfish / RC4</strong> : Algorithmes alternatifs. RC4 est un chiffrement de flux (stream cipher) très rapide mais considéré cryptographiquement cassé aujourd'hui.</li>
+            </ul>
+            <div style={{ background: 'rgba(6, 182, 212, 0.1)', borderLeft: '3px solid var(--accent-cyan)', padding: '12px', fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+              <strong>BouncyCastle & JCA :</strong> En Java, l'interface <code>KeyGenerator</code> est utilisée pour instancier la clé. Le provider BouncyCastle assure l'implémentation de la génération aléatoire robuste via <code>SecureRandom</code>.
+            </div>
+          </div>
+
+          {/* Bloc Asymétrique */}
+          <div style={{ background: 'var(--bg-input)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--accent-purple)' }}>2. Cryptographie Asymétrique (KeyPair)</h4>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
+              Aussi appelée cryptographie à clé publique (PKI). Elle génère <strong>une paire de clés</strong> liées mathématiquement : une Clé Publique (qui peut être distribuée à tous) et une Clé Privée (gardée secrète).
+            </p>
+            <ul style={{ paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.6' }}>
+              <li><strong>RSA</strong> : Basé sur la difficulté mathématique de factoriser le produit de très grands nombres premiers. 2048 bits est le minimum légal aujourd'hui (NIST). 4096 bits offre une sécurité à très long terme.</li>
+              <li><strong>DSA / ECDSA</strong> : Algorithmes dédiés spécifiquement à la Signature Numérique. L'ECDSA utilise les courbes elliptiques, permettant d'avoir la même sécurité que RSA 3072 avec une clé de seulement 256 bits !</li>
+            </ul>
+            <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '3px solid var(--accent-purple)', padding: '12px', fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+              <strong>Formats d'Export :</strong> Les clés publiques sont toujours encodées au format standard <strong>X.509</strong>. Les clés privées sont encodées au format <strong>PKCS#8</strong> pour assurer la compatibilité avec tous les autres systèmes (OpenSSL, SSH, etc.).
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -349,6 +349,40 @@ export default function CipherModule() {
           </div>
         )}
       </div>
+      
+      {/* Documentation Détaillée : Chiffrement */}
+      <div className="glass-card animate-fade-in" style={{ padding: '32px', gridColumn: '1 / -1', marginTop: '16px' }}>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '24px', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+          📖 Comprendre les Modes de Chiffrement et le Padding
+        </h3>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+          {/* Bloc Modes d'Opération */}
+          <div style={{ background: 'var(--bg-input)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--accent-cyan)' }}>1. Modes d'Opération (Block Ciphers)</h4>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
+              Les algorithmes comme AES chiffrent les données par blocs de taille fixe (ex: 128 bits). Si le texte est plus long, il faut un <strong>Mode d'Opération</strong> pour lier ces blocs.
+            </p>
+            <ul style={{ paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.6' }}>
+              <li><strong>ECB (Electronic Codebook)</strong> : ⚠️ Le plus faible. Chaque bloc est chiffré indépendamment. Des blocs clairs identiques donnent des blocs chiffrés identiques (conserve les motifs visuels de l'original).</li>
+              <li><strong>CBC (Cipher Block Chaining)</strong> : ✔️ Recommandé. Chaque bloc clair est combiné (XOR) avec le bloc chiffré précédent. Nécessite un <strong>Vecteur d'Initialisation (IV)</strong> pour le premier bloc.</li>
+              <li><strong>GCM (Galois/Counter Mode)</strong> : 🚀 Fortement Recommandé. Combine le chiffrement CTR avec un code d'authentification (MAC) intégré. On appelle cela l'<strong>AEAD</strong> (Authenticated Encryption with Associated Data).</li>
+            </ul>
+          </div>
+
+          {/* Bloc Vecteur d'Initialisation & Padding */}
+          <div style={{ background: 'var(--bg-input)', padding: '24px', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <h4 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '12px', color: 'var(--accent-purple)' }}>2. IV (Vecteur d'Initialisation) & Padding</h4>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
+              Le <strong>Padding</strong> (Rembourrage) est nécessaire car les algorithmes par blocs exigent que les données soient un multiple exact de la taille du bloc.
+            </p>
+            <ul style={{ paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.6' }}>
+              <li><strong>PKCS5Padding / PKCS7Padding</strong> : Si le dernier bloc est incomplet (ex: manque 4 octets), on ajoute 4 octets valant <code>0x04</code>. Si le bloc est complet, on ajoute un bloc entier de padding (ex: 16 octets valant <code>0x10</code>).</li>
+              <li><strong>Le rôle de l'IV</strong> : Un nombre aléatoire ajouté au premier bloc (souvent 16 octets en CBC, 12 octets en GCM). Il garantit que le chiffrement du même message avec la même clé donnera un cryptogramme différent à chaque fois. Il n'a pas besoin d'être secret, mais <strong>ne doit jamais être réutilisé</strong> (Nonce).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
