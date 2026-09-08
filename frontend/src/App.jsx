@@ -52,6 +52,10 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', nextTheme);
   };
 
+  if (!user && !showLogin) {
+    return <LandingPage onStart={() => setShowLogin(true)} />;
+  }
+
   return (
     <div className="app-container">
       <Navbar
@@ -65,11 +69,7 @@ export default function App() {
 
       <main style={{ flex: 1, maxWidth: '1400px', width: '100%', margin: '0 auto', padding: '24px 20px' }}>
         {!user ? (
-          !showLogin ? (
-            <LandingPage onStart={() => setShowLogin(true)} />
-          ) : (
-            <Login onLoginSuccess={handleLoginSuccess} onBack={() => setShowLogin(false)} />
-          )
+          <Login onLoginSuccess={handleLoginSuccess} onBack={() => setShowLogin(false)} />
         ) : (
           <div>
             {activeTab === 'admin' && user.role === 'admin' && <AdminDashboard />}
