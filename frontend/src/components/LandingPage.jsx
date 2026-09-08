@@ -320,58 +320,110 @@ export default function LandingPage({ onStart }) {
           </div>
 
           {/* --- DOCUMENTATION DETAILLEE --- */}
-          <div className="doc-section animate-fade delay-4">
-            <h2 className="doc-title">Protocoles et Implémentations</h2>
+          <div className="doc-section animate-fade delay-4" style={{ maxWidth: '1000px' }}>
+            <h2 className="doc-title" style={{ marginBottom: '10px' }}>Guide Complet : Protocoles et Implémentations</h2>
+            <p style={{ textAlign: 'center', color: '#6b7280', fontSize: '1.1rem', marginBottom: '50px', maxWidth: '700px', margin: '0 auto 50px' }}>
+              Une plongée détaillée dans les standards cryptographiques de l'industrie, intégrés au cœur de l'architecture Java/BouncyCastle de notre application.
+            </p>
             
-            <div className="doc-grid">
-              <div className="doc-card">
-                <h4>Cryptographie Symétrique</h4>
-                <p>
-                  Chiffrement ultra-rapide nécessitant le partage d'une clé secrète. Propulsé par <strong>BouncyCastle</strong> et l'API JCA.
-                </p>
-                <div>
-                  <span className="light-badge badge-blue">AES-256</span>
-                  <span className="light-badge">Mode GCM (AEAD)</span>
-                  <span className="light-badge">PKCS7 Padding</span>
-                </div>
+            {/* 1. Symétrique */}
+            <div style={{ marginBottom: '40px', paddingBottom: '40px', borderBottom: '1px solid #f3f4f6' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <span style={{ background: '#eff6ff', color: '#2563eb', padding: '8px 12px', borderRadius: '12px', fontWeight: 800 }}>01</span>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#111827' }}>Cryptographie Symétrique</h3>
               </div>
-
-              <div className="doc-card">
-                <h4>Cryptographie Asymétrique</h4>
-                <p>
-                  Infrastructure PKI avec clé Publique (chiffrement) et clé Privée (déchiffrement). Essentiel pour l'échange de clés.
-                </p>
-                <div>
-                  <span className="light-badge badge-purple">RSA-2048</span>
-                  <span className="light-badge badge-purple">RSA-4096</span>
-                  <span className="light-badge">OAEP Padding</span>
+              <p style={{ color: '#4b5563', lineHeight: 1.8, marginBottom: '24px', fontSize: '1.05rem' }}>
+                La cryptographie symétrique (ou à clé secrète) est le pilier du chiffrement de données en masse. Elle repose sur l'utilisation d'une <strong>clé unique</strong>, partagée entre l'émetteur et le destinataire, pour accomplir à la fois le chiffrement et le déchiffrement. L'application utilise l'API JCA avec le fournisseur <strong>BouncyCastle</strong> pour garantir des implémentations robustes.
+              </p>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                <div style={{ background: '#f9fafb', padding: '24px', borderRadius: '16px', border: '1px solid #f3f4f6' }}>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#1f2937' }}>AES (Advanced Encryption Standard)</h4>
+                  <p style={{ color: '#6b7280', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                    Standard approuvé par la NSA pour les documents "Top Secret". L'application utilise AES avec des clés de <strong>256 bits</strong>, offrant une résistance absolue contre les attaques par force brute actuelles et futures (post-quantique).
+                  </p>
                 </div>
-              </div>
-
-              <div className="doc-card">
-                <h4>Hachage & Intégrité</h4>
-                <p>
-                  Fonctions mathématiques à sens unique produisant un Digest de taille fixe. Optimisé pour le traitement en flux.
-                </p>
-                <div>
-                  <span className="light-badge badge-green">SHA-256</span>
-                  <span className="light-badge badge-green">SHA-512</span>
-                  <span className="light-badge">Avalanche Effect</span>
-                </div>
-              </div>
-
-              <div className="doc-card">
-                <h4>Signature & HMAC</h4>
-                <p>
-                  Combinaison du hachage et du chiffrement (Clé Privée) pour garantir simultanément l'intégrité et l'authentification.
-                </p>
-                <div>
-                  <span className="light-badge">HMAC-SHA256</span>
-                  <span className="light-badge badge-purple">SHA256withRSA</span>
-                  <span className="light-badge">JWT Token</span>
+                <div style={{ background: '#f9fafb', padding: '24px', borderRadius: '16px', border: '1px solid #f3f4f6' }}>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#1f2937' }}>Modes GCM & CBC</h4>
+                  <p style={{ color: '#6b7280', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                    AES opère par blocs de 128 bits. Le mode <strong>CBC</strong> chaîne ces blocs à l'aide d'un Vecteur d'Initialisation (IV). Le mode <strong>GCM (Galois/Counter Mode)</strong>, fortement recommandé, ajoute une couche AEAD garantissant l'intégrité en plus de la confidentialité.
+                  </p>
                 </div>
               </div>
             </div>
+
+            {/* 2. Asymétrique */}
+            <div style={{ marginBottom: '40px', paddingBottom: '40px', borderBottom: '1px solid #f3f4f6' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <span style={{ background: '#faf5ff', color: '#9333ea', padding: '8px 12px', borderRadius: '12px', fontWeight: 800 }}>02</span>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#111827' }}>Cryptographie Asymétrique (PKI)</h3>
+              </div>
+              <p style={{ color: '#4b5563', lineHeight: 1.8, marginBottom: '24px', fontSize: '1.05rem' }}>
+                Conçue pour résoudre le problème de distribution des clés, la cryptographie asymétrique repose sur une <strong>paire de clés mathématiquement liées</strong> : une clé publique (diffusable à tous) pour chiffrer, et une clé privée (gardée secrète) pour déchiffrer.
+              </p>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                <div style={{ background: '#f9fafb', padding: '24px', borderRadius: '16px', border: '1px solid #f3f4f6' }}>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#1f2937' }}>RSA (Rivest-Shamir-Adleman)</h4>
+                  <p style={{ color: '#6b7280', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                    Fondé sur la difficulté mathématique de la factorisation de grands nombres premiers. L'application génère des clés de <strong>2048 à 4096 bits</strong>, stockées aux formats standards X.509 (Publique) et PKCS#8 (Privée).
+                  </p>
+                </div>
+                <div style={{ background: '#f9fafb', padding: '24px', borderRadius: '16px', border: '1px solid #f3f4f6' }}>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#1f2937' }}>Padding OAEP</h4>
+                  <p style={{ color: '#6b7280', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                    Le chiffrement RSA pur est vulnérable à certaines attaques. L'application utilise le schéma de remplissage <strong>OAEP (Optimal Asymmetric Encryption Padding)</strong> pour introduire de l'aléatoire et assurer la sécurité sémantique.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Hachage */}
+            <div style={{ marginBottom: '40px', paddingBottom: '40px', borderBottom: '1px solid #f3f4f6' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <span style={{ background: '#f0fdf4', color: '#16a34a', padding: '8px 12px', borderRadius: '12px', fontWeight: 800 }}>03</span>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#111827' }}>Hachage et Intégrité (Message Digest)</h3>
+              </div>
+              <p style={{ color: '#4b5563', lineHeight: 1.8, marginBottom: '24px', fontSize: '1.05rem' }}>
+                Les fonctions de hachage sont des algorithmes mathématiques à <strong>sens unique</strong>. Elles convertissent une donnée de taille arbitraire en une empreinte de taille fixe. Il est calculatoirement impossible de retrouver le document d'origine à partir de l'empreinte.
+              </p>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                <div style={{ background: '#f9fafb', padding: '24px', borderRadius: '16px', border: '1px solid #f3f4f6' }}>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#1f2937' }}>Famille SHA-2 (SHA-256)</h4>
+                  <p style={{ color: '#6b7280', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                    Contrairement à MD5 ou SHA-1 qui sont obsolètes et vulnérables aux collisions, <strong>SHA-256</strong> garantit l'intégrité absolue. Toute modification du texte initial, même d'une seule virgule, modifiera drastiquement l'empreinte (Effet d'Avalanche).
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 4. Signature & HMAC */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <span style={{ background: '#fffbeb', color: '#d97706', padding: '8px 12px', borderRadius: '12px', fontWeight: 800 }}>04</span>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#111827' }}>Signature Numérique et Authenticité</h3>
+              </div>
+              <p style={{ color: '#4b5563', lineHeight: 1.8, marginBottom: '24px', fontSize: '1.05rem' }}>
+                Assurer que le message n'a pas été modifié (intégrité) ne suffit pas : il faut prouver son origine (authenticité). C'est le rôle des MAC (Message Authentication Code) et des Signatures Numériques.
+              </p>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                <div style={{ background: '#f9fafb', padding: '24px', borderRadius: '16px', border: '1px solid #f3f4f6' }}>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#1f2937' }}>HMAC (Clé Symétrique)</h4>
+                  <p style={{ color: '#6b7280', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                    Combine une fonction de hachage (SHA-256) avec une clé secrète partagée. Très utilisé dans les API modernes et les tokens JWT pour prévenir la falsification de requêtes.
+                  </p>
+                </div>
+                <div style={{ background: '#f9fafb', padding: '24px', borderRadius: '16px', border: '1px solid #f3f4f6' }}>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#1f2937' }}>Signature X.509 (Asymétrique)</h4>
+                  <p style={{ color: '#6b7280', lineHeight: 1.6, fontSize: '0.95rem' }}>
+                    Permet la <strong>Non-Répudiation</strong>. L'expéditeur hache le message et chiffre ce hachage avec sa <strong>Clé Privée</strong>. N'importe qui peut vérifier cette signature avec la Clé Publique, prouvant formellement l'identité du signataire. L'application implémente le standard strict <code>SHA256withRSA</code>.
+                  </p>
+                </div>
+              </div>
+            </div>
+
           </div>
           
           <div className="animate-fade delay-4" style={{ marginTop: '4rem', color: '#9ca3af', fontSize: '0.85rem' }}>
