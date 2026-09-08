@@ -53,7 +53,19 @@ export default function App() {
   };
 
   if (!user && !showLogin) {
-    return <LandingPage onStart={() => setShowLogin(true)} />;
+    return (
+      <div className="app-container">
+        <Navbar
+          user={user}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onLogout={handleLogout}
+          theme={theme}
+          toggleTheme={toggleTheme}
+        />
+        <LandingPage onStart={() => setShowLogin(true)} />
+      </div>
+    );
   }
 
   return (
